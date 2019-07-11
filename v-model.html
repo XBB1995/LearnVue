@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>learn v-model</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="https://unpkg.com/vue/dist/vue.js"></script>
+    <script>
+        window.onload = function () {
+            //编写Vue相关代码
+            let div1 = new Vue({
+                el: "#div1",
+                data: {
+                    mygame: "GTA",
+                    gameprice: "free",
+                    mypick: '0',
+                    picklist: [
+                        {pick: "01"},
+                        {pick: "02"},
+                        {pick: "03"}
+                    ],
+                    des: `是史诗级别的好游戏, 获得评分：`
+                }
+            });
+        };
+    </script>
+</head>
+<body>
+<div id="div1">
+    <p>您最喜欢的游戏: {{mygame}}, 价格: {{gameprice}} </p>
+    <input v-model="mygame">
+    <label>评分</label>
+    <select id="select" v-model="mypick">
+        <option v-for="val in picklist">{{parseFloat(val.pick)}}</option>
+    </select>
+    <br/>
+    <br/>
+    <textarea>{{mygame}}{{des}}{{mypick}}/10</textarea>
+</div>
+</body>
+</html>

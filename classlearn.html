@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:v-bind="http://www.w3.org/1999/xhtml" xmlns:v-on="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>learn v-cloak</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style type="text/css">
+        /*去除默认样式*/
+        * {
+            padding: 0;
+            margin: 0;
+        }
+
+        /*解决高度塌陷*/
+        .clearfix:before,
+        .clearfix:after {
+            content: '';
+            display: table;
+            clear: both;
+        }
+
+        [v-cloak] {
+            display: none;
+        }
+
+        .red {
+            color: red;
+        }
+        .active {
+            letter-spacing: 20px;
+        }
+    </style>
+    <script src="https://unpkg.com/vue/dist/vue.js"></script>
+    <script>
+        window.onload = function () {
+            //编写Vue相关代码
+            let vm = new Vue({
+                el: '#app',
+                data: {
+                    msg: "XBB",
+                    flag: true
+
+                },
+                methods: {
+                    // toggle(){
+                    //     this.flag = !this.flag;
+                    // }
+                }
+            });
+        };
+    </script>
+</head>
+<body>
+<div id="app">
+    <button @click="flag = !flag">切换flag</button>
+    <h3 v-if="flag">v-if</h3>
+    <h3 v-show="flag">v-show</h3>
+</div>
+</body>
+</html>

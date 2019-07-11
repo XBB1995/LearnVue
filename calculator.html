@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:v-bind="http://www.w3.org/1999/xhtml" xmlns:v-on="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>learn v-cloak</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style type="text/css">
+        /*去除默认样式*/
+        * {
+            padding: 0;
+            margin: 0;
+        }
+
+        /*解决高度塌陷*/
+        .clearfix:before,
+        .clearfix:after {
+            content: '';
+            display: table;
+            clear: both;
+        }
+
+        [v-cloak] {
+            display: none;
+        }
+
+        .inner {
+            height: 150px;
+            background: #bfa;
+        }
+    </style>
+    <script src="https://unpkg.com/vue/dist/vue.js"></script>
+    <script>
+        window.onload = function () {
+            //编写Vue相关代码
+            let vm = new Vue({
+                el: '#app',
+                data: {
+                    msg: "XBB",
+                    opt: '+',
+                    num1: null,
+                    num2: null,
+                    result: null
+                },
+                methods: {
+                    calc() {
+                        // switch (this.opt) {
+                        //     case '+':
+                        //         this.result = parseFloat(this.num1) + parseFloat(this.num2);
+                        //         break;
+                        //     case '-':
+                        //         this.result = parseFloat(this.num1) - parseFloat(this.num2);
+                        //         break;
+                        //     case '*':
+                        //         this.result = parseFloat(this.num1) * parseFloat(this.num2);
+                        //         break;
+                        //     case '/':
+                        //         this.result = parseFloat(this.num1) / parseFloat(this.num2);
+                        // }
+                        let codeStr = 'parseFloat(this.num1)'+this.opt+'parseFloat(this.num2)';
+                        this.result = eval(codeStr);
+                        //同样不能用于小数点精度要求高的环境
+                    }
+                }
+            });
+        };
+    </script>
+</head>
+<body>
+<div id="app">
+    <input type="text" v-model="num1">
+    <select v-model="opt">
+        //opt取的是被选中option的value值
+        <option value="+">+</option>
+        <option value="-">-</option>
+        <option value="*">*</option>
+        <option value="/">/</option>
+    </select>
+    <input type="text" v-model="num2">
+    <button @click="calc">=</button>
+    <input type="text" v-model="result">
+</div>
+</body>
+</html>

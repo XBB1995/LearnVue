@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Learn Vue</title>
+    <!--跨屏幕的兼容-->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!--导入Vue.js-->
+    <style type="text/css">
+        /*去除默认样式*/
+        * {
+            padding: 0;
+            margin: 0;
+        }
+
+        /*解决高度塌陷*/
+        .clearfix:before,
+        .clearfix:after {
+            content: '';
+            display: table;
+            clear: both;
+        }
+
+        .span1 {
+            color: red;
+        }
+    </style>
+    <script src="https://unpkg.com/vue/dist/vue.js"></script>
+    <script>
+        window.onload = function () {
+            //编写Vue相关代码
+            let myApp = new Vue({
+                el: '#myApp'
+                , data: {
+                    seen: true
+                    , games: [
+                        {
+                            title: "仙剑奇侠传"
+                            , price: 400
+                        }
+                        , {
+                            title: "空洞骑士"
+                            , price: 48
+                        }
+                        , {
+                            title: "刀塔霸业"
+                            , price: 0
+                        }
+                    ]
+                }
+            });
+
+        };
+    </script>
+</head>
+<body>
+<div id="myApp">
+    <h3>游戏列表</h3>
+    <p v-if="seen">2017最新发卖</p>
+    <ol>
+        <li v-for="game in games">{{game.title}} / {{game.price}}元</li>
+    </ol>
+</div>
+</body>
+</html>
