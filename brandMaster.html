@@ -83,70 +83,114 @@
 
                 }
             })
-
-            let vm = new Vue({
-                el: '#app',
-                data: {
-                    msg: "XBB",
-                    index: '',
-                    carname: '',
-                    keywords: '',
-                    carlist: [
-                        {index: 1, carname: "奔驰", addtime: new Date()},
-                        {index: 2, carname: "宝马", addtime: new Date()},
-                        {index: 3, carname: "AE86", addtime: new Date()}
-                    ]
-                },
-                methods: {
-                    add() {
-                        let car = {index: this.index, carname: this.carname, addtime: new Date()}
-                        this.carlist.push(car)
-                        this.index = this.carname = ''
-                    },
-                    del(index) {
-                        //findIndex 与 some 类似
-                        // return true 时 返回index
-                        // let i = this.carlist.findIndex(item=>{
-                        //     if (item.index == index) return true;
-                        // })
-                        // this.carlist.splice(i, 1);
-                        //forEach
-                        this.carlist.forEach((item, i) => {
-                            if (item.index === index) {
-                                this.carlist.splice(i, 1);
-                            }
-                        })
-
-                    },
-                    search(keywords) {
-                        // let newList = []
-                        // this.carlist.forEach((item) => {
-                        //     if (item.carname.indexOf(keywords) != -1) {
-                        //         newList.push(item);
-                        //     }
-                        // })
-                        // return newList
-                        return this.carlist.filter(item => {
-                            if (item.carname.includes(keywords)) return item
-                        })
-                    }
-                },
-                filters: {
-                    //定义私有过滤器 过滤器两个条件 过滤器名称 和处理函数
-                    dateFormat: function (dataStr, pattern = '') {
-                        let dt = new Date(dataStr)
-                        let y = dt.getFullYear()
-                        let m = (dt.getMonth() + 1).toString().padStart(2, '0')
-                        let d = (dt.getDate()).toString().padStart(2, '0')
-                        if (pattern == 'yyyy-mm-dd') {
-                            return `${y}-${m}-${d}`
-                        } else {
-                            return dataStr
-                        }
-                    }
+            Vue.directive('color', {
+                // 样式相关的操作放在bind中执行
+                bind: function (el, binding) {
+                    // console.log(binding.value);
+                    // el.style.color = 'red'
+                    el.style.color = binding.value
                 }
-            });
-        };
+            })
+
+            var vm = new Vue({
+                    el: '#app',
+                    data: {
+                        msg: "XBB",
+                        index: '',
+                        carname: '',
+                        keywords: '',
+                        carcolor: '#f1a1f1',
+                        carlist: [
+                            {index: 1, carname: "奔驰", addtime: new Date()},
+                            {index: 2, carname: "宝马", addtime: new Date()},
+                            {index: 3, carname: "AE86", addtime: new Date()}
+                        ]
+                    },
+                    methods: {
+                        add() {
+                            let car = {index: this.index, carname: this.carname, addtime: new Date()}
+                            this.carlist.push(car)
+                            this.index = this.carname = ''
+                        },
+                        del(index) {
+                            //findIndex 与 some 类似
+                            // return true 时 返回index
+                            // let i = this.carlist.findIndex(item=>{
+                            //     if (item.index == index) return true;
+                            // })
+                            // this.carlist.splice(i, 1);
+                            //forEach
+                            this.carlist.forEach((item, i) => {
+                                if (item.index === index) {
+                                    this.carlist.splice(i, 1);
+                                }
+                            })
+
+                        },
+                        search(keywords) {
+                            // let newList = []
+                            // this.carlist.forEach((item) => {
+                            //     if (item.carname.indexOf(keywords) != -1) {
+                            //         newList.push(item);
+                            //     }
+                            // })
+                            // return newList
+                            return this.carlist.filter(item => {
+                                if (item.carname.includes(keywords)) return item
+                            })
+                        }
+                    },
+                    filters: {
+                        //定义私有过滤器 过滤器两个条件 过滤器名称 和处理函数
+                        dateFormat: function (dataStr, pattern = '') {
+                            let dt = new Date(dataStr)
+                            let y = dt.getFullYear()
+                            let m = (dt.getMonth() + 1).toString().padStart(2, '0')
+                            let d = (dt.getDate()).toString().padStart(2, '0')
+                            if (pattern == 'yyyy-mm-dd') {
+                                return `${y}-${m}-${d}`
+                            } else {
+                                return dataStr
+                            }
+                        }
+                    },
+                    //私有自定义指令
+                    directives: {
+                        //使用简写模式 意味着把这个function 同时写到bind和update中去
+                        'fontsize': function (el, binding) {
+                            el.style.fontSize = parseInt(binding.value) + 'px'
+                        },
+                        'fontstyle': function (el, binding) {
+                            el.style.fontStyle = binding.value
+                        }
+                    },
+                    // beforeCreate() {
+                    //     //在beforeCreate生命周期函数执行的时候，
+                    //     //data和el和methods都还没有加载
+                    // },
+                    // created() {
+                    //     // console.log(this.methods.add);
+                    // },
+                    // beforeMount() {
+                    //     //模板已经在内存中编辑完成了，但是尚未把模板渲染到页面中
+                    //     //挂载 页面还是旧的 及 模板字符串
+                    // },
+                    // mounted() {
+                    //     //将真实的替换到浏览器的页面中去
+                    // },
+                    // beforeUpdate() {
+                    //     //数据被更新才触发
+                    //     //页面中显示的数据还是旧的，此时data数据采是最新的
+                    //     //但页面尚未和最新的数据保持同步
+                    // },
+                    // updeted() {
+                    //     //页面和数据已经同步，都是更新后的
+                    // }
+                }
+                )
+            ;
+        }
+        ;
     </script>
 </head>
 <body>
@@ -166,7 +210,7 @@
             </label>
             <input type="button" id="btn" value="提交" @click="add">
             <label>
-                搜索名称关键字:<input type="text" v-model="keywords" v-focus>
+                搜索名称关键字:<input type="text" v-model="keywords" v-focus v-color="carcolor">
             </label>
         </div>
     </div>
@@ -184,7 +228,7 @@
         <tr v-for="item in search(keywords)" :key="item.index">
             <td>{{item.index}}</td>
             <td>{{item.carname}}</td>
-            <td>{{item.addtime | dateFormat('yyyy-mm-dd')}}</td>
+            <td v-fontstyle="'italic'">{{item.addtime | dateFormat('yyyy-mm-dd')}}</td>
             <td>
                 <a href="" @click.prevent="del(item.index)">删除</a>
             </td>
@@ -192,6 +236,7 @@
         </tbody>
 
     </table>
+    <!--<p v-fontsize="'30'">This is a p tag.</p>-->
 </div>
 </body>
 </html>
