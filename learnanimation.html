@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:v-bind="http://www.w3.org/1999/xhtml" xmlns:v-on="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>learn</title>
+    <!--<link rel="stylesheet" href="animate.css">-->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style type="text/css">
+        /*去除默认样式*/
+        * {
+            padding: 0;
+            margin: 0;
+        }
+
+        /*解决高度塌陷*/
+        .clearfix:before,
+        .clearfix:after {
+            content: '';
+            display: table;
+            clear: both;
+        }
+
+        [v-cloak] {
+            display: none;
+        }
+
+        /*.v-enter,*/
+        /*.v-leave-to {*/
+        /*opacity: 0;*/
+        /*transform: translateX(150px);*/
+        /*}*/
+        /*.v-enter-active,*/
+        /*.v-leave-active {*/
+        /*transition: all 0.4s ease*/
+        /*}*/
+        /*.my-enter,*/
+        /*.my-leave-to {*/
+        /*opacity: 0;*/
+        /*transform: translateY(150px);*/
+        /*}*/
+        /*.my-enter-active,*/
+        /*.my-leave-active {*/
+        /*transition: all 0.8s ease*/
+        /*}*/
+        .ball {
+            background: red;
+            height: 15px;
+            width: 15px;
+            border-radius: 50%;
+        }
+    </style>
+    <script src="https://unpkg.com/vue/dist/vue.js"></script>
+    <script>
+        window.onload = function () {
+            //编写Vue相关代码
+            let vm = new Vue({
+                el: '#app',
+                data: {
+                    msg: "XBB",
+                    flag: false
+                },
+                methods: {
+                    beforeEnter(el){
+                        //设置小球动画开始前的起始位置
+                        el.style.transform = "translate(0, 0)"
+                    },
+                    enter(el, done){
+                        el.offsetWidth
+                        //强制动画刷新
+                        el.style.transform = "translate(150px, 450px)"
+                        el.style.transition = "all 1s ease"
+                        done()
+                        //相当于引用afterEnter方法 立即执行
+                    },
+                    afterEnter(el){
+                        this.flag = !this.flag
+                    }
+                }
+            });
+        };
+    </script>
+</head>
+<body>
+<div id="app">
+    <!--<input type="button" value="TOGGLE" @click="flag=!flag">-->
+    <!--<transition enter-active-class="bounceIn"-->
+    <!--leave-active-class="bounceOut"-->
+    <!--:duration="{enter: 400, leave: 100}">-->
+    <!--<p v-if="flag">{{msg}}</p>-->
+    <!--</transition>-->
+    <input type="button" value="加入购物车" @click="flag=!flag">
+    <transition
+            @before-enter="beforeEnter"
+            @enter="enter"
+            @after-enter="afterEnter">
+        <div class="ball" v-show="flag"></div>
+    </transition>
+
+</div>
+</body>
+</html>

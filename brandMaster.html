@@ -48,6 +48,7 @@
         }
     </style>
     <script src="https://unpkg.com/vue/dist/vue.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
     <script>
         window.onload = function () {
             //全局过滤器
@@ -95,49 +96,82 @@
             var vm = new Vue({
                     el: '#app',
                     data: {
-                        msg: "XBB",
-                        index: '',
-                        carname: '',
+                        id: '',
+                        name: '',
                         keywords: '',
                         carcolor: '#f1a1f1',
                         carlist: [
-                            {index: 1, carname: "奔驰", addtime: new Date()},
-                            {index: 2, carname: "宝马", addtime: new Date()},
-                            {index: 3, carname: "AE86", addtime: new Date()}
+                            {id: 1, name: "奔驰", ctime: new Date()},
+                            {id: 2, name: "宝马", ctime: new Date()},
+                            {id: 3, name: "AE86", ctime: new Date()}
                         ]
                     },
+                    created() {
+                        this.getAllList()
+                    },
                     methods: {
-                        add() {
-                            let car = {index: this.index, carname: this.carname, addtime: new Date()}
-                            this.carlist.push(car)
-                            this.index = this.carname = ''
-                        },
-                        del(index) {
-                            //findIndex 与 some 类似
-                            // return true 时 返回index
-                            // let i = this.carlist.findIndex(item=>{
-                            //     if (item.index == index) return true;
+                        // add() {
+                        //     let car = {id: this.id, name: this.name, ctime: new Date()}
+                        //     this.carlist.push(car)
+                        //     this.id = this.name = ''
+                        // },
+                        del(id) {
+                            //findid 与 some 类似
+                            // return true 时 返回id
+                            // let i = this.carlist.findid(item=>{
+                            //     if (item.id == id) return true;
                             // })
                             // this.carlist.splice(i, 1);
                             //forEach
-                            this.carlist.forEach((item, i) => {
-                                if (item.index === index) {
-                                    this.carlist.splice(i, 1);
-                                }
-                            })
+                            // this.carlist.forEach((item, i) => {
+                            //     if (item.id === id) {
+                            //         this.carlist.splice(i, 1);
+                            //     }
+                            // })
+                            axios.get('http://www.liulongbin.top:3005/api/delproduct/' + id)
+                                .then(res => {
+                                    if (res.data.status === 0) {
+                                        this.getAllList()
+                                    }
+                                }).catch(error => console.log(error))
 
                         },
                         search(keywords) {
                             // let newList = []
                             // this.carlist.forEach((item) => {
-                            //     if (item.carname.indexOf(keywords) != -1) {
+                            //     if (item.name.idOf(keywords) != -1) {
                             //         newList.push(item);
                             //     }
                             // })
                             // return newList
                             return this.carlist.filter(item => {
-                                if (item.carname.includes(keywords)) return item
+                                if (item.name.includes(keywords)) return item
                             })
+                        },
+                        getAllList() {
+                            axios.get('http://www.liulongbin.top:3005/api/getprodlist')
+                                .then(res => {
+                                    if (res.data.status === 0) {
+                                        // console.log(res);
+                                        this.carlist = res.data.message
+                                    } else {
+                                        alert("数据状态出错！")
+                                    }
+                                })
+                                .catch(error => console.log(error))
+
+                        },
+                        add() {//post测试代码
+                            //缺数据add
+                            axios.post('http://www.liulongbin.top:3005/api/addproduct/', {
+                                id: this.id,
+                                name: this.name
+                            })
+                                .then(res => {
+                                    this.getAllList()
+                                })
+                                .catch(error => console.log(error))
+
                         }
                     },
                     filters: {
@@ -202,10 +236,10 @@
         </div>
         <div id="ddiv">
             <label>
-                序号:<input type="text" v-model="index">
+                序号:<input type="text" v-model="id">
             </label>
             <label>
-                品牌:<input type="text" v-model="carname" @keyup.f2="add">
+                品牌:<input type="text" v-model="name" @keyup.f2="add">
                 <!--f2是自定义的键盘修饰符-->
             </label>
             <input type="button" id="btn" value="提交" @click="add">
@@ -225,17 +259,19 @@
         </tr>
         </thead>
         <tbody>
-        <tr v-for="item in search(keywords)" :key="item.index">
-            <td>{{item.index}}</td>
-            <td>{{item.carname}}</td>
-            <td v-fontstyle="'italic'">{{item.addtime | dateFormat('yyyy-mm-dd')}}</td>
+        <tr v-for="item in search(keywords)" :key="item.id">
+            <td>{{item.id}}</td>
+            <td>{{item.name}}</td>
+            <td v-fontstyle="'italic'">{{item.ctime | dateFormat('yyyy-mm-dd')}}</td>
             <td>
-                <a href="" @click.prevent="del(item.index)">删除</a>
+                <a href="" @click.prevent="del(item.id)">删除</a>
             </td>
         </tr>
         </tbody>
 
     </table>
+
+    <!--<input type="button" id="btn1" value="从服务器获取数据" @click="getAllList">-->
     <!--<p v-fontsize="'30'">This is a p tag.</p>-->
 </div>
 </body>
