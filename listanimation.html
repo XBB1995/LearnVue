@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:v-bind="http://www.w3.org/1999/xhtml" xmlns:v-on="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>learn v-cloak</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style type="text/css">
+        /*去除默认样式*/
+        * {
+            padding: 0;
+            margin: 0;
+        }
+
+        /*解决高度塌陷*/
+        .clearfix:before,
+        .clearfix:after {
+            content: '';
+            display: table;
+            clear: both;
+        }
+
+        [v-cloak] {
+            display: none;
+        }
+        li {
+            line-height: 35px;
+            margin: 5px;
+            padding-left: 5px;
+            border: 2px dashed #bfa;
+            font-size: 10px;
+            width: 100%;
+        }
+        li:hover {
+            background: #bfa;
+            transition: all 0.8s ease;
+        }
+        .v-enter,
+        .v-leave-to {
+            opacity: 0;
+            transform: translateY(80px);
+        }
+        .v-enter-active,
+        .v-leave-active {
+            transition: all 0.6s ease;
+        }
+        /*v-move 和 v-leave-avtive 结合使用*/
+        .v-move {
+            transition: all 0.6s ease;
+        }
+        .v-leave-active {
+            position: absolute;
+        }
+    </style>
+    <script src="https://unpkg.com/vue/dist/vue.js"></script>
+    <script>
+        window.onload = function () {
+            //编写Vue相关代码
+            let vm = new Vue({
+                el: '#app',
+                data: {
+                    msg: "XBB",
+                    id: '',
+                    name: '',
+                    list: [
+                        {id: 1, name:'A'},
+                        {id: 2, name:'B'},
+                        {id: 3, name:'C'},
+                        {id: 4, name:'D'},
+                    ]
+                },
+                methods: {
+                    add(){
+                        var obj = {id: this.id, name: this.name}
+                        this.list.push(obj)
+                    },
+                    del(i){
+                        this.list.splice(i, 1)
+                    }
+
+                }
+            });
+        };
+    </script>
+</head>
+<body>
+<div v-cloak id="app">
+
+    <div class="header">
+        <div>
+            <h3>添加信息</h3>
+        </div>
+        <div>
+            <label>
+                序号:<input type="text" v-model="id">
+            </label>
+            <label>
+                品牌:<input type="text" v-model="name">
+                <!--f2是自定义的键盘修饰符-->
+            </label>
+            <input type="button" value="提交" @click="add">
+            <!--<label>-->
+                <!--搜索名称关键字:<input type="text" v-model="keywords">-->
+            <!--</label>-->
+        </div>
+    </div>
+
+    <ul>
+        <transition-group appear tag="ul">
+            <li v-for="(item, i) in list" :key="item.id" @click="del(i)">
+                {{item.id}}***{{item.name}}
+            </li>
+        </transition-group>
+
+    </ul>
+</div>
+</body>
+</html>
