@@ -73,7 +73,12 @@
                         //相当于引用afterEnter方法 立即执行
                     },
                     afterEnter(el){
+                        //功能1 控制小球的显示与隐藏
+                        //功能2 直接跳过后半场动画 让flag直接变为false
+                        //使得动画从上半场动画再次开始
                         this.flag = !this.flag
+                        //Vue把一个完整的动画，通过钩子函数拆分为两部分
+                        //flag标识符表示动画的切换
                     }
                 }
             });
@@ -93,7 +98,7 @@
             @before-enter="beforeEnter"
             @enter="enter"
             @after-enter="afterEnter">
-        <div class="ball" v-show="flag"></div>
+        <div v-cloak class="ball" v-show="flag"></div>
     </transition>
 
 </div>

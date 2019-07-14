@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:v-bind="http://www.w3.org/1999/xhtml" xmlns:v-on="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>learn v-cloak</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style type="text/css">
+        /*去除默认样式*/
+        * {
+            padding: 0;
+            margin: 0;
+        }
+
+        /*解决高度塌陷*/
+        .clearfix:before,
+        .clearfix:after {
+            content: '';
+            display: table;
+            clear: both;
+        }
+
+        [v-cloak] {
+            display: none;
+        }
+
+        .v-enter,
+        .v-leave-to {
+            opacity: 0;
+            transform: translateX(150px);
+        }
+        .v-enter-active,
+        .v-leave-active {
+            transition: all 0.5s ease;
+        }
+    </style>
+    <script src="https://unpkg.com/vue/dist/vue.js"></script>
+    <script>
+        window.onload = function () {
+
+            Vue.component('login', {
+                template: '<h3>登录组件</h3>'
+            })
+
+            Vue.component('register', {
+                template: '<h3>注册组件</h3>'
+            })
+
+            //编写Vue相关代码
+            let vm = new Vue({
+                el: '#app',
+                data: {
+                    msg: "XBB",
+                    compname: 'login'
+                },
+                methods: {
+                    login() {
+                        this.compname = 'login'
+                    },
+                    register() {
+                        this.compname = 'register'
+                    }
+                }
+            });
+        };
+    </script>
+</head>
+<body>
+<div id="app">
+    <!--组件名称调用示例-->
+    <!--<component :is="componentId"></component> -->
+    <a href="" @click.prevent="login">登录</a>
+    <a href="" @click.prevent="register">注册</a>
+    <!--mode属性设置组件切换的方式-->
+    <transition mode="out-in">
+        <component :is="compname"></component>
+    </transition>
+    <!--<login v-if="flag"></login>-->
+    <!--<register v-else></register>-->
+</div>
+</body>
+</html>

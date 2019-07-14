@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:v-bind="http://www.w3.org/1999/xhtml" xmlns:v-on="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>learn v-cloak</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style type="text/css">
+        /*去除默认样式*/
+        * {
+            padding: 0;
+            margin: 0;
+        }
+
+        /*解决高度塌陷*/
+        .clearfix:before,
+        .clearfix:after {
+            content: '';
+            display: table;
+            clear: both;
+        }
+
+        [v-cloak] {
+            display: none;
+        }
+    </style>
+    <script src="https://unpkg.com/vue/dist/vue.js"></script>
+    <script>
+        window.onload = function () {
+            // 定义全局组件方式
+            Vue.component('mycom1', {
+                template: '<p>Inner tempate</p>'
+            })
+            //组件的模板对象
+            let comp = {
+                template: '<h2>This is a h2 tag.</h2>'
+            }
+            //编写Vue相关代码
+            let vm = new Vue({
+                el: '#app',
+                data: {
+                    msg: "XBB",
+                    datamsgFromSon: ''
+                },
+                methods: {
+                    func1(arg1='1', arg2='2') {
+                        // console.log('参数1：' + arg1 + ' 参数2: ' + arg2)
+                        this.datamsgFromSon = {
+                            a1: arg1,
+                            a2: arg2
+                        }
+                    }
+                },
+                //私有组件定义
+                components: {
+                    //组件名： 组件的模板对象
+                    myinnercom1: {
+                        data() {
+                            //子组件中的data数据是自身私有的数据
+                            //如通过Ajax请求回来的数据
+                            //可读可写
+                            return {
+                                title: 'Vue',
+                                content: 'learn now!'
+                            }
+                        },
+                        template: '<h3 @click="change">{{title}}---this is a h3 tag.---{{parentmsg}}</h3>',
+                        //组件中的所有props中的所有数据都是通过父组件传递给子组件的
+                        //只可读
+                        props: ['parentmsg'],
+                        methods: {
+                            change() {
+                                // this.title = 'XBB'
+                                //emit 触发、调用的意思
+                                //子组件中触发父组件传递过来方法的方式
+                                this.$emit('func', this.title, this.content)
+                            }
+                        }
+                    },
+                    //组件名和模板对象名相同时，可简写
+                    comp
+                }
+            });
+        };
+    </script>
+</head>
+<body>
+<div id="app">
+    <p>{{datamsgFromSon}}</p>
+    <mycom1></mycom1>
+    <!--父组件可在引用子组件的时候，以属性绑定的形式传递到子组件内部，供子组件使用-->
+    <!--传递方法时，使用的是事件绑定机制v-on-->
+    <myinnercom1 :parentmsg="msg" @func="func1"></myinnercom1>
+    <comp></comp>
+</div>
+</body>
+</html>

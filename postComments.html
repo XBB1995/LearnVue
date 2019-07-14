@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:v-bind="http://www.w3.org/1999/xhtml" xmlns:v-on="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>learn v-cloak</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style type="text/css">
+        /*去除默认样式*/
+        * {
+            padding: 0;
+            margin: 0;
+        }
+
+        /*解决高度塌陷*/
+        .clearfix:before,
+        .clearfix:after {
+            content: '';
+            display: table;
+            clear: both;
+        }
+
+        [v-cloak] {
+            display: none;
+        }
+    </style>
+    <script src="https://unpkg.com/vue/dist/vue.js"></script>
+    <link rel="stylesheet" href="bootstrap-3.4.1-dist/css/bootstrap.min.css">
+    <script>
+        window.onload = function () {
+            //组件的模块对象
+            let commentBox = {
+                template: '#tmp1',
+                data() {
+                    return {
+                        user: '',
+                        content: ''
+                    }
+                },
+                methods: {
+                    postcmt() {
+                        //组织出评论数据对象,保存至localStorage
+                        //lS中只支持存放字符串数据，先调用JSON.stringify
+                        //保存之前需要将之前的评论数据先取出，转换成为一个数组对象
+                        //如果之前的评论不存在，则返回'[]',调用JSON.parse
+                        //将最新的评论数据对象放入数组
+                        //最新的评论列表数组转为数组字符串 lS.setItem()
+                        let cmt = {id: Date.now(), user: this.user, content: this.content}
+                        let list = JSON.parse(localStorage.getItem("cmts") || '[]')
+                        list.unshift(cmt)
+                        localStorage.setItem("cmts", JSON.stringify(list))
+                        this.user = this.content = ''
+                        //调用父组件的方法 加载评论列表
+                        this.$emit('loadcmt')
+                    }
+                }
+            }
+            //编写Vue相关代码
+            let vm = new Vue({
+                el: '#app',
+                data: {
+                    msg: "XBB",
+                    list: [
+                        // {
+                        //     id: Date.now(), user: 'KD', content: '我没有投敌'
+                        // },
+                        // {
+                        //     id: Date.now() + 1, user: '我不是KD的小号', content: 'KD没有投敌'
+                        // },
+                        // {
+                        //     id: Date.now() + 2, user: '我也不是KD的小号', content: 'KD现役第一'
+                        // },
+                    ]
+                },
+                methods: {
+                    loadComments() {
+                        let list = JSON.parse(localStorage.getItem("cmts") || '[]')
+                        this.list = list
+                    }
+                },
+                components: {
+                    'cmt-box': commentBox
+                },
+                created() {
+                    this.loadComments()
+                }
+            });
+        };
+    </script>
+</head>
+<body>
+<div id="app">
+    <cmt-box @loadcmt="loadComments"></cmt-box>
+
+    <ul class="list-group">
+        <li class="list-group-item" v-for="item in list" :key="item.id">
+            <span class="badge">评论人： {{item.user}}</span>
+            {{item.content}}
+        </li>
+    </ul>
+</div>
+
+<!--全局组件用templa标签-->
+<template id="tmp1">
+    <div>
+        <div class="form-group">
+            <label>评论人</label>
+            <input type="text" class="form-control" v-model="user">
+        </div>
+
+        <div class="form-group">
+            <label>评论内容</label>
+            <textarea class="form-control" v-model="content"></textarea>
+        </div>
+
+        <div class="form-group">
+            <input type="button" value="发表"
+                   class="btn btn-primary" @click="postcmt">
+        </div>
+    </div>
+</template>
+
+</body>
+
+</html>
